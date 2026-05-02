@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Pro Library Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- LOADING SCREEN -->
+<div id="loader">
+    <div class="loader-content">
+        <div class="loader-icon">📚</div>
+        <h2>Loading Library...</h2>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- LOGIN MODAL - FIXED VERSION -->
+<div id="loginModal" class="modal active">
+    <div class="modal-content">
+        <div class="login-header">
+            <i class="fas fa-university"></i>
+            <h2>Library Management</h2>
+            <p>👤 admin | 🔑 1234</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input id="username" type="text" placeholder="admin" value="admin" required>
+                <label>Username</label>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input id="password" type="password" placeholder="1234" value="1234" required>
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="fas fa-eye" id="eyeIcon"></i>
+                </span>
+                <label>Password</label>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <span class="btn-text">Sign In</span>
+                <div class="btn-loader hidden">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div id="mainApp" class="main-app hidden">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-book-open"></i>
+            <h3>LMS Pro</h3>
+        </div>
+        <nav class="nav-menu">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#books" class="nav-item" data-section="books">
+                <i class="fas fa-book"></i>
+                <span>Books</span>
+            </a>
+            <a href="#gallery" class="nav-item" data-section="gallery">
+                <i class="fas fa-th-large"></i>
+                <span>Browse</span>
+            </a>
+            <a href="#members" class="nav-item" data-section="members">
+                <i class="fas fa-users"></i>
+                <span>Members</span>
+            </a>
+            <a href="#reports" class="nav-item" data-section="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOPBAR -->
+        <div class="topbar">
+
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input id="globalSearch" type="text" placeholder="Search books, members..." onkeyup="globalSearch()">
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <!-- ✅ ONLY ONE USER PROFILE -->
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="roleText">Admin</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DASHBOARD SECTION -->
+        <section id="dashboard" class="content-section active">
+            <div class="hero-new">
+
+                <div class="hero-text">
+                    <h1>📚 Everyday Reading</h1>
+                    <p>
+                        Discover amazing books and manage your library easily.
+                        Read more, learn more, grow more 🚀
+                    </p>
+
+                    <div class="hero-btns">
+                        <button class="start">Start Now</button>
+                        <button class="read">Explore</button>
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <img src="images/back.jpg" alt="books">
+                </div>
+
+            </div>
+
+            <!-- STATS CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <h3 id="totalBooks">100+</h3>
+                        <p>Total Books</p>
+                    </div>
+                </div>
+                <div class="stat-card borrowed">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-info">
+                        <h3 id="borrowedBooks">0</h3>
+                        <p>Borrowed</p>
+                    </div>
+                </div>
+                <div class="stat-card available">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="availableBooks">0</h3>
+                        <p>Available</p>
+                    </div>
+                </div>
+                <div class="stat-card overdue">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <h3 id="overdueBooks">0</h3>
+                        <p>Overdue</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="quick-actions">
+                <button class="action-btn primary admin-only" onclick="showAddBookModal()">
+                    <i class="fas fa-plus"></i>
+                    Add New Book
+                </button>
+                <button class="action-btn secondary" onclick="exportData()">
+                    <i class="fas fa-download"></i>
+                    Export Report
+                </button>
+            </div>
+        </section>
+
+        <!-- BOOKS SECTION -->
+        <section id="books" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-book"></i> Book Management</h2>
+                <div class="section-actions">
+                    <input id="bookSearch" placeholder="🔍 Search books..." onkeyup="filterBooks()">
+                    <button class="btn-icon" onclick="loadBooks()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="books-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="booksTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- GALLERY SECTION -->
+        <section id="gallery" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-th-large"></i> Book Gallery</h2>
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterGallery('all')">All</button>
+                    <button class="filter-btn" onclick="filterGallery('available')">Available</button>
+                    <button class="filter-btn" onclick="filterGallery('borrowed')">Borrowed</button>
+                </div>
+            </div>
+            <div id="galleryGrid" class="gallery-grid"></div>
+        </section>
+
+        <!-- MEMBERS SECTION -->
+        <section id="members" class="content-section">
+            <h2><i class="fas fa-users"></i> Members</h2>
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h3>No members data available</h3>
+                <p>Member management coming soon...</p>
+            </div>
+        </section>
+
+        <!-- REPORTS SECTION -->
+        <section id="reports" class="content-section">
+            <h2><i class="fas fa-chart-bar"></i> Reports</h2>
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h3>Analytics coming soon</h3>
+                <p>Detailed reports and analytics will be available here</p>
+            </div>
+        </section>
+
+        <div class="right-panel">
+
+            <div class="quote-box">
+                <h3>📖 Quote of the Day</h3>
+                <p>"A room without books is like a body without a soul."</p>
+                <span>- Cicero</span>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Did You Know?</h3>
+                <p>
+                    Reading improves memory, focus, and analytical thinking.
+                    Make reading a daily habit 📚
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ADD BOOK MODAL -->
+<div id="addBookModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-plus"></i> Add New Book</h3>
+            <span class="close" onclick="closeAddBookModal()">&times;</span>
+        </div>
+        <form id="addBookForm">
+            <div class="input-group">
+                <i class="fas fa-book"></i>
+                <input id="bookTitle" type="text" placeholder="Book Title" required>
+                <label>Title</label>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input id="bookAuthor" type="text" placeholder="Author Name" required>
+                <label>Author</label>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-tag"></i>
+                <select id="bookGenre" required>
+                    <option value="">Select Genre</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                    <option value="mystery">Mystery</option>
+                </select>
+                <label>Genre</label>
+            </div>
+            <button type="submit" class="btn-primary full-width">Add Book</button>
+        </form>
+    </div>
+</div>
+
+<!-- TOAST NOTIFICATIONS -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
